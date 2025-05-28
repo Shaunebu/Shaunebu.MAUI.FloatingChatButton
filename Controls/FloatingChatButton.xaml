@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="FloatingChatButton.Controls.FloatingChatButton"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:FloatingChatButton.Converters"
+    x:Name="rootControl">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <AbsoluteLayout
+        x:Name="absoluteLayout"
+        BackgroundColor="Transparent"
+        HorizontalOptions="FillAndExpand"
+        VerticalOptions="FillAndExpand">
+
+        <!--  Overlay  -->
+        <BoxView
+            x:Name="overlay"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            IsVisible="False"
+            Opacity="0"
+            ZIndex="0"
+            Color="Black" />
+
+        <!--  Floating chat bubble  -->
+        <Frame
+            x:Name="chatBubble"
+            Padding="0"
+            AbsoluteLayout.LayoutBounds="1,1,60,60"
+            AbsoluteLayout.LayoutFlags="None"
+            BackgroundColor="{Binding PrimaryColor, Source={x:Reference rootControl}}"
+            CornerRadius="50"
+            HasShadow="True"
+            HeightRequest="60"
+            WidthRequest="60"
+            ZIndex="999">
+
+            <Grid
+                x:Name="bubbleContent"
+                Padding="20"
+                IsVisible="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Messages  -->
+                <CollectionView
+                    x:Name="MessagesCollectionView"
+                    Grid.Row="0"
+                    ItemsSource="{Binding Messages, Source={x:Reference rootControl}}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Label
+                                Margin="5"
+                                Padding="10"
+                                BackgroundColor="{Binding IsIncoming, Converter={StaticResource BoolToColorConverter}}"
+                                HorizontalOptions="{Binding IsIncoming, Converter={StaticResource BoolToAlignmentConverter}}"
+                                Text="{Binding Text}"
+                                TextColor="Black"
+                                VerticalOptions="Start" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!--  Input + button  -->
+                <StackLayout
+                    Grid.Row="1"
+                    Orientation="Horizontal"
+                    Spacing="5">
+                    <Entry
+                        x:Name="MessageEntry"
+                        HorizontalOptions="FillAndExpand"
+                        Placeholder="Hello..." />
+                    <Button Text="Enviar" />
+                </StackLayout>
+            </Grid>
+        </Frame>
+    </AbsoluteLayout>
+</ContentView>
