@@ -91,8 +91,9 @@ floatingChatButton.ExpandDuration = 400;
 
 📱 Screenshots
 --------------
-![App Platorm](Screenshots/ControlCollapsed.png)
-![App Platorm](Screenshots/ControlExpanded.png)
+
+![Collapsed](https://dev.azure.com/jpdmaui/32808558-5c79-418c-906e-a9f52802efc6/_apis/git/repositories/a8c6dfa9-4558-4758-a8b8-6ca3b7f94576/Items?path=/.attachments/Screenshot%202025-07-24%20135441-4e2d7e5c-8050-461d-bde7-16cbf6cb62dc.png&download=false&resolveLfs=true&%24format=octetStream&api-version=5.0-preview.1&sanitize=true&versionDescriptor.version=wikiMaster)
+![Expanded](https://dev.azure.com/jpdmaui/32808558-5c79-418c-906e-a9f52802efc6/_apis/git/repositories/a8c6dfa9-4558-4758-a8b8-6ca3b7f94576/Items?path=/.attachments/Screenshot%202025-07-24%20135614-acec17e9-1499-4bd3-bc4f-ce4f8b0b7651.png&download=false&resolveLfs=true&%24format=octetStream&api-version=5.0-preview.1&sanitize=true&versionDescriptor.version=wikiMaster)
 
 🛠 Troubleshooting
 ------------------
