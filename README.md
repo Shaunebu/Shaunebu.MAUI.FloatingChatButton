@@ -1,7 +1,6 @@
 ﻿# FloatingChatButton for .NET MAUI
 
-![NuGet Version](https://img.shields.io/nuget/v/FloatingChatButton?color=blue&label=NuGet)
-![License](https://img.shields.io/github/license/jpdblog/FloatingChatButton)
+![NuGet Version](https://img.shields.io/nuget/v/JpdBlog.MAUI.Controls.FloatingChatButton?color=blue&label=NuGet)
 
 Un botón de chat flotante completamente personalizable para aplicaciones .NET MAUI, con soporte para mensajes y animaciones fluidas.
 
@@ -10,7 +9,7 @@ Un botón de chat flotante completamente personalizable para aplicaciones .NET M
 Agrega el paquete NuGet a tu proyecto:
 
 ```bash
-dotnet add package FloatingChatButton
+dotnet add package JpdBlog.MAUI.Controls.FloatingChatButton
 ```
 
 ## 🚀 Uso Básico
