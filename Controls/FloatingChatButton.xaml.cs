@@ -4,11 +4,16 @@ using System.Collections.ObjectModel;
 
 namespace FloatingChatButton.Controls;
 
-public partial class FloatingChatButton : ContentView
+public partial class FloatingChatButton : Microsoft.Maui.Controls.ContentView
 {
+    #region Fields
     private bool _isDragging;
     private Point _lastPosition;
-    private bool _isExpanded = false;
+    private bool _isExpanded
+    {
+        get => IsExpanded;
+        set => IsExpanded = value;
+    }
     private const int CollapsedSize = 60;
     private const double ExpandedWidthPercentage = 0.8;
     private const double ExpandedHeightPercentage = 0.7;
@@ -22,31 +27,169 @@ public partial class FloatingChatButton : ContentView
     private Rect _collapsedBounds;
     private bool _hasCollapsedBounds = false;
     private bool _isInitialPositionSet = false;
+    #endregion
 
-    public static readonly BindableProperty MessagesProperty =
-        BindableProperty.Create(nameof(Messages), typeof(ObservableCollection<ChatMessage>), typeof(FloatingChatButton), new ObservableCollection<ChatMessage>());
-
-    public static readonly BindableProperty PrimaryColorProperty =
-        BindableProperty.Create(nameof(PrimaryColor), typeof(Color), typeof(FloatingChatButton), Colors.Blue);
-
+    #region Properties    
+    /// <summary>
+    /// Gets or sets the messages.
+    /// </summary>
+    /// <value>
+    /// The messages.
+    /// </value>
     public ObservableCollection<ChatMessage> Messages
     {
         get => (ObservableCollection<ChatMessage>)GetValue(MessagesProperty);
         set => SetValue(MessagesProperty, value);
     }
+    public static readonly BindableProperty MessagesProperty =
+       BindableProperty.Create(nameof(Messages), typeof(ObservableCollection<ChatMessage>), typeof(FloatingChatButton), new ObservableCollection<ChatMessage>());
 
+
+    /// <summary>
+    /// Gets or sets the color of the primary.
+    /// </summary>
+    /// <value>
+    /// The color of the primary.
+    /// </value>
     public Color PrimaryColor
     {
         get => (Color)GetValue(PrimaryColorProperty);
         set => SetValue(PrimaryColorProperty, value);
     }
+    public static readonly BindableProperty PrimaryColorProperty =
+        BindableProperty.Create(nameof(PrimaryColor), typeof(Color), typeof(FloatingChatButton), Colors.Blue);
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this instance is expanded.
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if this instance is expanded; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsExpanded
+    {
+        get => (bool)GetValue(IsExpandedProperty);
+        set => SetValue(IsExpandedProperty, value);
+    }
+    public static readonly BindableProperty IsExpandedProperty =
+        BindableProperty.Create(
+            nameof(IsExpanded),
+            typeof(bool),
+            typeof(FloatingChatButton),
+            false,
+            BindingMode.TwoWay,
+            propertyChanged: OnIsExpandedChanged);
+    #endregion
+
+    #region Constructor    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FloatingChatButton"/> class.
+    /// </summary>
     public FloatingChatButton()
     {
         InitializeComponent();
         InitializeGestures();
     }
+    #endregion
 
+    #region Methods    
+    /// <summary>
+    /// Called when [is expanded changed].
+    /// </summary>
+    /// <param name="bindable">The bindable.</param>
+    /// <param name="oldValue">The old value.</param>
+    /// <param name="newValue">The new value.</param>
+    private static void OnIsExpandedChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        var control = (FloatingChatButton)bindable;
+        var isExpanded = (bool)newValue;
+
+        // Only trigger if the value actually changed
+        if (isExpanded != (bool)oldValue)
+        {
+            if (isExpanded)
+            {
+                control.ExpandBubbleInternal();
+            }
+            else
+            {
+                control.CollapseBubbleInternal();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Expands the bubble internal.
+    /// </summary>
+    private async void ExpandBubbleInternal()
+    {
+        chatBubble.AnchorX = 0;
+        chatBubble.AnchorY = 0;
+
+        _collapsedBounds = AbsoluteLayout.GetLayoutBounds(chatBubble);
+        _hasCollapsedBounds = true;
+
+        var targetWidth = Math.Min(Width * ExpandedWidthPercentage, MaxExpandedWidth);
+        var targetHeight = Math.Min(Height * ExpandedHeightPercentage, MaxExpandedHeight);
+
+        bool isRightHalf = _collapsedBounds.X > Width / 2;
+        bool isBottomHalf = _collapsedBounds.Y > Height / 2;
+
+        double newX = isRightHalf ? Width - targetWidth - EdgePadding : EdgePadding;
+        double newY = _collapsedBounds.Y;
+
+        if (newY + targetHeight > Height - EdgePadding)
+            newY = Height - targetHeight - EdgePadding;
+        if (newY < EdgePadding)
+            newY = EdgePadding;
+
+        overlay.Opacity = 0;
+        overlay.IsVisible = true;
+        await overlay.FadeTo(0.4, 200);
+
+        AbsoluteLayout.SetLayoutBounds(chatBubble, new Rect(newX, newY, targetWidth, targetHeight));
+        await chatBubble.ResizeTo(targetWidth, targetHeight, 300, Easing.SpringOut);
+        chatBubble.BackgroundColor = (Color)Application.Current.Resources["Secondary"];
+
+        //bubbleContent.IsVisible = true;
+    }
+
+    /// <summary>
+    /// Collapses the bubble internal.
+    /// </summary>
+    private async void CollapseBubbleInternal()
+    {
+        chatBubble.AnchorX = 0;
+        chatBubble.AnchorY = 0;
+
+        if (_hasCollapsedBounds)
+        {
+            AbsoluteLayout.SetLayoutBounds(chatBubble, new Rect(_collapsedBounds.X, _collapsedBounds.Y, CollapsedSize, CollapsedSize));
+
+            await Task.WhenAll(
+                overlay?.FadeTo(0, 200) ?? Task.CompletedTask,
+                chatBubble.ResizeTo(CollapsedSize, CollapsedSize, 250, Easing.SpringOut)
+            );
+        }
+
+        if (overlay != null)
+            overlay.IsVisible = false;
+
+        chatBubble.BackgroundColor = (Color)Application.Current.Resources["Primary"];
+
+        //bubbleContent.IsVisible = false;
+    }
+
+    /// <summary>
+    /// Toggles the bubble.
+    /// </summary>
+    private void ToggleBubble()
+    {
+        IsExpanded = !IsExpanded;
+    }
+
+    /// <summary>
+    /// Initializes the gestures.
+    /// </summary>
     private void InitializeGestures()
     {
         var panGesture = new PanGestureRecognizer();
@@ -61,8 +204,16 @@ public partial class FloatingChatButton : ContentView
         var overlayTapGesture = new TapGestureRecognizer();
         overlayTapGesture.Tapped += (s, e) => ToggleBubble();
         overlay.GestureRecognizers.Add(overlayTapGesture);
+
+        chatBubble.AnchorX = 0;
+        chatBubble.AnchorY = 0;
     }
 
+    /// <summary>
+    /// Called when [bubble panned].
+    /// </summary>
+    /// <param name="sender">The sender.</param>
+    /// <param name="e">The <see cref="PanUpdatedEventArgs"/> instance containing the event data.</param>
     private void OnBubblePanned(object sender, PanUpdatedEventArgs e)
     {
         this.AbortAnimation("SnapAnimation");
@@ -162,73 +313,11 @@ public partial class FloatingChatButton : ContentView
         }
     }
 
-    private void ToggleBubble()
-    {
-        if (_isExpanded)
-        {
-            CollapseBubble();
-        }
-        else
-        {
-            ExpandBubble();
-        }
-    }
-
-    private async void ExpandBubble()
-    {
-        chatBubble.AnchorX = 0;
-        chatBubble.AnchorY = 0;
-
-        _collapsedBounds = AbsoluteLayout.GetLayoutBounds(chatBubble);
-        _hasCollapsedBounds = true;
-
-        var targetWidth = Math.Min(Width * ExpandedWidthPercentage, MaxExpandedWidth);
-        var targetHeight = Math.Min(Height * ExpandedHeightPercentage, MaxExpandedHeight);
-
-        bool isRightHalf = _collapsedBounds.X > Width / 2;
-        bool isBottomHalf = _collapsedBounds.Y > Height / 2;
-
-        double newX = isRightHalf ? Width - targetWidth - EdgePadding : EdgePadding;
-        double newY = _collapsedBounds.Y;
-
-        if (newY + targetHeight > Height - EdgePadding)
-            newY = Height - targetHeight - EdgePadding;
-        if (newY < EdgePadding)
-            newY = EdgePadding;
-
-        overlay.Opacity = 0;
-        overlay.IsVisible = true;
-        await overlay.FadeTo(0.4, 200);
-
-        AbsoluteLayout.SetLayoutBounds(chatBubble, new Rect(newX, newY, targetWidth, targetHeight));
-        await chatBubble.ResizeTo(targetWidth, targetHeight, 300, Easing.SpringOut);
-
-        _isExpanded = true;
-        bubbleContent.IsVisible = true;
-    }
-
-    private async void CollapseBubble()
-    {
-        chatBubble.AnchorX = 0;
-        chatBubble.AnchorY = 0;
-
-        if (_hasCollapsedBounds)
-        {
-            AbsoluteLayout.SetLayoutBounds(chatBubble, new Rect(_collapsedBounds.X, _collapsedBounds.Y, CollapsedSize, CollapsedSize));
-
-            await Task.WhenAll(
-                overlay?.FadeTo(0, 200) ?? Task.CompletedTask,
-                chatBubble.ResizeTo(CollapsedSize, CollapsedSize, 250, Easing.SpringOut)
-            );
-        }
-
-        if (overlay != null)
-            overlay.IsVisible = false;
-
-        _isExpanded = false;
-        bubbleContent.IsVisible = false;
-    }
-
+    /// <summary>
+    /// Animates the throw.
+    /// </summary>
+    /// <param name="finalX">The final x.</param>
+    /// <param name="y">The y.</param>
     private void AnimateThrow(double finalX, double y)
     {
         var startX = AbsoluteLayout.GetLayoutBounds(chatBubble).X;
@@ -241,6 +330,9 @@ public partial class FloatingChatButton : ContentView
         .Commit(this, "ThrowAnimation", 16, 500, Easing.CubicOut, finished: (v, c) => SnapToEdge());
     }
 
+    /// <summary>
+    /// Snaps to edge.
+    /// </summary>
     private void SnapToEdge()
     {
         var bounds = AbsoluteLayout.GetLayoutBounds(chatBubble);
@@ -269,12 +361,22 @@ public partial class FloatingChatButton : ContentView
             repeat: () => false);
     }
 
+    /// <summary>
+    /// Updates the anchor points.
+    /// </summary>
+    /// <param name="x">The x.</param>
+    /// <param name="y">The y.</param>
     private void UpdateAnchorPoints(double x, double y)
     {
         chatBubble.AnchorX = (x > Width / 2) ? 1 : 0;
         chatBubble.AnchorY = (y > Height / 2) ? 1 : 0;
     }
 
+    /// <summary>
+    /// Called when [size allocated].
+    /// </summary>
+    /// <param name="width">The width.</param>
+    /// <param name="height">The height.</param>
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
@@ -308,4 +410,5 @@ public partial class FloatingChatButton : ContentView
                     targetHeight));
         }
     }
+    #endregion
 }

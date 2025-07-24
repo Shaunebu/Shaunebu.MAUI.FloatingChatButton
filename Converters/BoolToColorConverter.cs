@@ -4,7 +4,7 @@ namespace FloatingChatButton.Converters;
 public class BoolToColorConverter : IValueConverter
 {
     public Color TrueColor { get; set; } = Colors.LightGray;
-    public Color FalseColor { get; set; } = Colors.LightBlue;
+    public Color FalseColor { get; set; } = Colors.White;
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
