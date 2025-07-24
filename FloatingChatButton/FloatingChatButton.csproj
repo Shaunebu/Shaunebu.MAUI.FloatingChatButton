@@ -14,15 +14,29 @@
 
 		<!-- NuGet metadata -->
 		<PackageId>Shaunebu.MAUI.Controls.FloatingChatButton</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.2</Version>
 		<Authors>Jorge Perales Diaz</Authors>
 		<Company>Shaunebu ®</Company>
 		<Description>Floating chat button in .NET MAUI</Description>
-		<PackageProjectUrl>https://dev.azure.com/jpdmaui/Nugets/_git/FloatingChatButton</PackageProjectUrl>
-		<RepositoryUrl>https://dev.azure.com/jpdmaui/Nugets/_git/FloatingChatButton</RepositoryUrl>
+		<PackageProjectUrl>https://www.nuget.org/packages/Shaunebu.MAUI.Controls.FloatingChatButton/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/jpd21122012/MAUI.FloatingChatButton.git</RepositoryUrl>
 		<PackageTags>maui;chat;floating;button</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageIcon>Shaunebu.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\Shaunebu.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="12.1.0" />
