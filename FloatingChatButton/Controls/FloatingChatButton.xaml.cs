@@ -1,6 +1,7 @@
 using FloatingChatButton.Extensions;
 using FloatingChatButton.Models;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace FloatingChatButton.Controls;
 
@@ -9,7 +10,7 @@ public partial class FloatingChatButton : Microsoft.Maui.Controls.ContentView
     #region Fields
     private bool _isDragging;
     private Point _lastPosition;
-    private bool _isExpanded
+    private bool isExpanded
     {
         get => IsExpanded;
         set => IsExpanded = value;
@@ -92,6 +93,44 @@ public partial class FloatingChatButton : Microsoft.Maui.Controls.ContentView
         get => (ImageSource)GetValue(BotIconProperty);
         set => SetValue(BotIconProperty, value);
     }
+
+    /// <summary>
+    /// Gets or sets the command that is invoked when a message is sent.
+    /// /// </summary>
+    /// <value>
+    /// The message sent command.
+    /// </value>
+    public ICommand MessageSentCommand
+    {
+        get => (ICommand)GetValue(MessageSentCommandProperty);
+        set => SetValue(MessageSentCommandProperty, value);
+    }
+    public static readonly BindableProperty MessageSentCommandProperty =
+        BindableProperty.Create(
+            nameof(MessageSentCommand),
+            typeof(ICommand),
+            typeof(FloatingChatButton),
+            defaultValue: null,
+            defaultBindingMode: BindingMode.OneWay);
+
+    /// <summary>
+    /// Gets or sets a value indicating whether pressing Enter sends the message.
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if Enter key sends the message; otherwise, <c>false</c>.
+    /// </value>
+    public bool SendOnEnter
+    {
+        get => (bool)GetValue(SendOnEnterProperty);
+        set => SetValue(SendOnEnterProperty, value);
+    }
+    public static readonly BindableProperty SendOnEnterProperty =
+        BindableProperty.Create(
+            nameof(SendOnEnter),
+            typeof(bool),
+            typeof(FloatingChatButton),
+            defaultValue: true,
+            defaultBindingMode: BindingMode.OneWay);
     #endregion
 
     #region Constructor    
@@ -106,7 +145,59 @@ public partial class FloatingChatButton : Microsoft.Maui.Controls.ContentView
     }
     #endregion
 
-    #region Methods    
+    #region Methods
+    /// <summary>
+    /// Called when the send button is clicked.
+    /// </summary>
+    /// <param name="sender">The sender.</param>
+    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+    private void OnSendButtonClicked(object sender, EventArgs e)
+    {
+        SendMessage();
+    }
+
+    /// <summary>
+    /// Called when the message entry is completed (Enter key pressed).
+    /// </summary>
+    /// <param name="sender">The sender.</param>
+    /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+    private void OnMessageEntryCompleted(object sender, EventArgs e)
+    {
+        if (SendOnEnter)
+        {
+            SendMessage();
+        }
+    }
+
+    /// <summary>
+    /// Sends the message.
+    /// </summary>
+    private void SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(MessageEntry.Text))
+            return;
+
+        var messageText = MessageEntry.Text;
+
+        Messages.Add(new ChatMessage
+        {
+            Text = messageText,
+            IsIncoming = false
+        });
+
+        MessageEntry.Text = string.Empty;
+
+        if (Messages.Count > 0)
+        {
+            MessagesCollectionView.ScrollTo(Messages.Count - 1, position: ScrollToPosition.End, animate: true);
+        }
+
+        if (MessageSentCommand?.CanExecute(messageText) == true)
+        {
+            MessageSentCommand.Execute(messageText);
+        }
+    }
+    
     /// <summary>
     /// Called when [is expanded changed].
     /// </summary>
@@ -408,7 +499,7 @@ public partial class FloatingChatButton : Microsoft.Maui.Controls.ContentView
             _isInitialPositionSet = true;
         }
 
-        if (_isExpanded)
+        if (isExpanded)
         {
             var targetWidth = Math.Min(width * ExpandedWidthPercentage, MaxExpandedWidth);
             var targetHeight = Math.Min(height * ExpandedHeightPercentage, MaxExpandedHeight);
