@@ -18,8 +18,8 @@
     <AbsoluteLayout
         x:Name="absoluteLayout"
         BackgroundColor="Transparent"
-        HorizontalOptions="FillAndExpand"
-        VerticalOptions="FillAndExpand">
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill">
 
         <!--  Overlay  -->
         <BoxView
@@ -89,7 +89,7 @@
                         Spacing="5">
                         <Entry
                             x:Name="MessageEntry"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             Placeholder="Please type a message..."
                             PlaceholderColor="Black"
                             TextColor="Black" />
