@@ -3,7 +3,9 @@
     x:Class="FloatingChatButton.Demo.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:fc="http://schemas.shaunebu.com/maui/controls">
+    xmlns:fc="http://schemas.shaunebu.com/maui/controls"
+    xmlns:local="clr-namespace:FloatingChatButton.Demo"
+    x:DataType="local:MainPage">
 
     <ScrollView>
         <Grid>
@@ -31,9 +33,18 @@
                     HorizontalOptions="Fill"
                     SemanticProperties.Hint="Counts the number of times you click"
                     Text="Click me" />
+
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="Send on Enter:" VerticalOptions="Center" />
+                    <Switch x:Name="SendOnEnterSwitch" IsToggled="True" />
+                </HorizontalStackLayout>
             </VerticalStackLayout>
 
-            <fc:FloatingChatButton x:Name="myfloatingButton" PrimaryColor="#2196F3" />
+            <fc:FloatingChatButton
+                x:Name="myfloatingButton"
+                MessageSentCommand="{Binding MessageSentCommand}"
+                PrimaryColor="#2196F3"
+                SendOnEnter="{Binding IsToggled, Source={x:Reference SendOnEnterSwitch}}" />
 
         </Grid>
     </ScrollView>
