@@ -9,12 +9,12 @@
             try
             {
                 InitializeComponent();
-                myfloatingButton.Messages = new System.Collections.ObjectModel.ObservableCollection<FloatingChatButton.Models.ChatMessage>
-            {
-                new FloatingChatButton.Models.ChatMessage { Text = "Hello, how can I help you?", IsIncoming = true },
-                new FloatingChatButton.Models.ChatMessage { Text = "I have a question about your product.", IsIncoming = false },
-                new FloatingChatButton.Models.ChatMessage { Text = "Sure! What would you like to know?", IsIncoming = true }
-            };
+                myfloatingButton.Messages =
+                [
+                    new() { Text = "Hello, how can I help you?", IsIncoming = true },
+                    new() { Text = "I have a question about your product.", IsIncoming = false },
+                    new() { Text = "Sure! What would you like to know?", IsIncoming = true }
+                ];
             }
             catch (Exception ex)
             {

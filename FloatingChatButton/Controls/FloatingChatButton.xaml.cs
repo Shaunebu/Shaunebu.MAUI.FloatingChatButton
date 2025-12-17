@@ -101,7 +101,7 @@ public partial class FloatingChatButton : Microsoft.Maui.Controls.ContentView
     public FloatingChatButton()
     {
         InitializeComponent();
-        Messages = new ObservableCollection<ChatMessage>();
+        Messages = [];
         InitializeGestures();
     }
     #endregion
@@ -163,7 +163,7 @@ public partial class FloatingChatButton : Microsoft.Maui.Controls.ContentView
 
         AbsoluteLayout.SetLayoutBounds(chatBubble, new Rect(newX, newY, targetWidth, targetHeight));
         await chatBubble.ResizeTo(targetWidth, targetHeight, 300, Easing.SpringOut);
-        chatBubble.BackgroundColor = (Color)Application.Current.Resources["Secondary"];
+        chatBubble.BackgroundColor = (Color)Application.Current!.Resources["Secondary"];
 
         //bubbleContent.IsVisible = true;
     }
@@ -189,7 +189,7 @@ public partial class FloatingChatButton : Microsoft.Maui.Controls.ContentView
         if (overlay != null)
             overlay.IsVisible = false;
 
-        chatBubble.BackgroundColor = (Color)Application.Current.Resources["Primary"];
+        chatBubble.BackgroundColor = (Color)Application.Current!.Resources["Primary"];
 
         //bubbleContent.IsVisible = false;
     }
