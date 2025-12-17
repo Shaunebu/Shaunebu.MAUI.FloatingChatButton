@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="FloatingChatButton.Demo/FloatingChatButton.Demo.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="FloatingChatButton/FloatingChatButton.csproj" />
+</Solution>
