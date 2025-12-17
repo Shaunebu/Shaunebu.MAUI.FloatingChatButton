@@ -83,21 +83,21 @@
                     </CollectionView>
 
                     <!--  Input + button  -->
-                    <StackLayout
-                        Grid.Row="1"
-                        Orientation="Horizontal"
-                        Spacing="5">
+                    <HorizontalStackLayout Grid.Row="1" Spacing="5">
                         <Entry
                             x:Name="MessageEntry"
                             HorizontalOptions="FillAndExpand"
                             Placeholder="Please type a message..."
                             PlaceholderColor="Black"
-                            TextColor="Black" />
+                            TextColor="Black"
+                            Completed="OnMessageEntryCompleted" />
                         <Button
+                            x:Name="SendButton"
                             BackgroundColor="{StaticResource Primary}"
+                            Clicked="OnSendButtonClicked"
                             CornerRadius="10"
                             Text="Send" />
-                    </StackLayout>
+                    </HorizontalStackLayout>
                 </Grid>
 
             </Grid>
