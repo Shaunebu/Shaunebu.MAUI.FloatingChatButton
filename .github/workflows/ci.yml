@@ -42,14 +42,8 @@ jobs:
           $total = [int]$doc.TestRun.ResultSummary.Counters.total
           if ($total -le 0) { throw "Zero tests were discovered." }
 
-      - name: Build library Android
-        run: dotnet build FloatingChatButton/FloatingChatButton.csproj --configuration Release --framework net9.0-android --no-restore
-
       - name: Build library Android .NET 10
         run: dotnet build FloatingChatButton/FloatingChatButton.csproj --configuration Release --framework net10.0-android --no-restore
-
-      - name: Build demo Android
-        run: dotnet build FloatingChatButton.Demo/FloatingChatButton.Demo.csproj --configuration Release --framework net9.0-android --no-restore
 
       - name: Build demo Android .NET 10
         run: dotnet build FloatingChatButton.Demo/FloatingChatButton.Demo.csproj --configuration Release --framework net10.0-android --no-restore
@@ -75,8 +69,6 @@ jobs:
               if ($entries -notcontains $entry) { throw "Package is missing $entry." }
             }
             $requiredPrefixes = @(
-              "lib/net9.0-android",
-              "lib/net9.0-ios",
               "lib/net10.0-android",
               "lib/net10.0-ios"
             )
@@ -125,14 +117,8 @@ jobs:
       - name: Restore
         run: dotnet restore FloatingChatButton.sln
 
-      - name: Build library iOS
-        run: dotnet build FloatingChatButton/FloatingChatButton.csproj --configuration Release --framework net9.0-ios --no-restore
-
       - name: Build library iOS .NET 10
         run: dotnet build FloatingChatButton/FloatingChatButton.csproj --configuration Release --framework net10.0-ios --no-restore
-
-      - name: Build demo iOS
-        run: dotnet build FloatingChatButton.Demo/FloatingChatButton.Demo.csproj --configuration Release --framework net9.0-ios --no-restore
 
       - name: Build demo iOS .NET 10
         run: dotnet build FloatingChatButton.Demo/FloatingChatButton.Demo.csproj --configuration Release --framework net10.0-ios --no-restore
@@ -142,7 +128,5 @@ jobs:
         with:
           name: ios-build-outputs
           path: |
-            FloatingChatButton/bin/Release/net9.0-ios
             FloatingChatButton/bin/Release/net10.0-ios
-            FloatingChatButton.Demo/bin/Release/net9.0-ios
             FloatingChatButton.Demo/bin/Release/net10.0-ios
