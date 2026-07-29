@@ -126,7 +126,7 @@ static void AddLocalMessage(global::FloatingChatButton.Controls.FloatingChatButt
 ## Screenshots
 
 <div align="center">
-  <img src="docs/assets/floating-chat-expanded.png" width="200" alt="Expanded FloatingChatButton">
+  <img src="FloatingChatButton/docs/assets/floating-chat-expanded.png" width="200" alt="Expanded FloatingChatButton">
 </div>
 
 ## Accessibility
