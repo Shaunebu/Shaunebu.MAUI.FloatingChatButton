@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
+		<TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
 
 		<OutputType>Exe</OutputType>
 		<RootNamespace>FloatingChatButton.Demo</RootNamespace>
@@ -45,11 +45,14 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="12.1.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android' Or '$(TargetFramework)' == 'net9.0-ios'">
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.90" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android' Or '$(TargetFramework)' == 'net10.0-ios'">
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.80" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>

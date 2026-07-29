@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui;
+using FloatingChatButton;
 using Microsoft.Extensions.Logging;
 
 namespace FloatingChatButton.Demo
@@ -10,7 +10,7 @@ namespace FloatingChatButton.Demo
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseMauiCommunityToolkit()
+                .UseFloatingChatButton()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -18,7 +18,7 @@ namespace FloatingChatButton.Demo
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

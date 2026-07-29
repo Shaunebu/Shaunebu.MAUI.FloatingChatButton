@@ -3,15 +3,17 @@
     x:Class="FloatingChatButton.Controls.FloatingChatButton"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:FloatingChatButton.Controls"
     xmlns:converters="clr-namespace:FloatingChatButton.Converters"
-    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    x:Name="rootControl">
+    xmlns:models="clr-namespace:FloatingChatButton.Models"
+    x:Name="rootControl"
+    x:DataType="controls:FloatingChatButton">
     <ContentView.Resources>
         <ResourceDictionary>
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter" />
             <converters:BoolToStrokeShapeConverter x:Key="BoolToStrokeShapeConverter" />
-            <mct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         </ResourceDictionary>
     </ContentView.Resources>
 
@@ -64,7 +66,7 @@
                         Grid.Row="0"
                         ItemsSource="{Binding Messages, Source={x:Reference rootControl}}">
                         <CollectionView.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="models:ChatMessage">
                                 <Border
                                     Margin="5"
                                     Padding="10"
@@ -94,7 +96,9 @@
                             PlaceholderColor="Black"
                             TextColor="Black" />
                         <Button
+                            x:Name="SendButton"
                             BackgroundColor="{StaticResource Primary}"
+                            Clicked="OnSendButtonClicked"
                             CornerRadius="10"
                             Text="Send" />
                     </StackLayout>

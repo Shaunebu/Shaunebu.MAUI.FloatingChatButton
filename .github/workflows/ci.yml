@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  android-and-pack:
+    name: Android build and pack
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore workloads
+        run: dotnet workload restore FloatingChatButton.sln
+
+      - name: Restore
+        run: dotnet restore FloatingChatButton.sln
+
+      - name: Build solution
+        run: dotnet build FloatingChatButton.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test FloatingChatButton.sln --configuration Release --no-build --logger trx --results-directory TestResults
+
+      - name: Fail if zero tests ran
+        shell: pwsh
+        run: |
+          $trx = Get-ChildItem -Path TestResults -Filter *.trx -Recurse | Select-Object -First 1
+          if (-not $trx) { throw "No TRX test result file was produced." }
+          [xml]$doc = Get-Content -LiteralPath $trx.FullName
+          $total = [int]$doc.TestRun.ResultSummary.Counters.total
+          if ($total -le 0) { throw "Zero tests were discovered." }
+
+      - name: Build library Android
+        run: dotnet build FloatingChatButton/FloatingChatButton.csproj --configuration Release --framework net9.0-android --no-restore
+
+      - name: Build library Android .NET 10
+        run: dotnet build FloatingChatButton/FloatingChatButton.csproj --configuration Release --framework net10.0-android --no-restore
+
+      - name: Build demo Android
+        run: dotnet build FloatingChatButton.Demo/FloatingChatButton.Demo.csproj --configuration Release --framework net9.0-android --no-restore
+
+      - name: Build demo Android .NET 10
+        run: dotnet build FloatingChatButton.Demo/FloatingChatButton.Demo.csproj --configuration Release --framework net10.0-android --no-restore
+
+      - name: Pack
+        run: dotnet pack FloatingChatButton/FloatingChatButton.csproj --configuration Release --no-restore
+
+      - name: Inspect package
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $pkg = Get-ChildItem -Path FloatingChatButton/bin/Release -Filter Shaunebu.MAUI.Controls.FloatingChatButton.*.nupkg | Select-Object -First 1
+          if (-not $pkg) { throw "Package was not created." }
+          $zip = [IO.Compression.ZipFile]::OpenRead($pkg.FullName)
+          try {
+            $entries = $zip.Entries.FullName
+            $requiredExact = @(
+              "README.md",
+              "docs/assets/floating-chat-expanded.png",
+              "Shaunebu.MAUI.Controls.FloatingChatButton.nuspec"
+            )
+            foreach ($entry in $requiredExact) {
+              if ($entries -notcontains $entry) { throw "Package is missing $entry." }
+            }
+            $requiredPrefixes = @(
+              "lib/net9.0-android",
+              "lib/net9.0-ios",
+              "lib/net10.0-android",
+              "lib/net10.0-ios"
+            )
+            foreach ($prefix in $requiredPrefixes) {
+              foreach ($extension in @(".dll", ".xml")) {
+                $match = $entries | Where-Object { $_ -like "$prefix*/FloatingChatButton$extension" } | Select-Object -First 1
+                if (-not $match) { throw "Package is missing $prefix*/FloatingChatButton$extension." }
+              }
+            }
+          }
+          finally {
+            $zip.Dispose()
+          }
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: TestResults
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            FloatingChatButton/bin/Release/*.nupkg
+            FloatingChatButton/bin/Release/*.snupkg
+
+  ios:
+    name: iOS build
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore workloads
+        run: dotnet workload restore FloatingChatButton.sln
+
+      - name: Restore
+        run: dotnet restore FloatingChatButton.sln
+
+      - name: Build library iOS
+        run: dotnet build FloatingChatButton/FloatingChatButton.csproj --configuration Release --framework net9.0-ios --no-restore
+
+      - name: Build library iOS .NET 10
+        run: dotnet build FloatingChatButton/FloatingChatButton.csproj --configuration Release --framework net10.0-ios --no-restore
+
+      - name: Build demo iOS
+        run: dotnet build FloatingChatButton.Demo/FloatingChatButton.Demo.csproj --configuration Release --framework net9.0-ios --no-restore
+
+      - name: Build demo iOS .NET 10
+        run: dotnet build FloatingChatButton.Demo/FloatingChatButton.Demo.csproj --configuration Release --framework net10.0-ios --no-restore
+
+      - name: Upload iOS build outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-outputs
+          path: |
+            FloatingChatButton/bin/Release/net9.0-ios
+            FloatingChatButton/bin/Release/net10.0-ios
+            FloatingChatButton.Demo/bin/Release/net9.0-ios
+            FloatingChatButton.Demo/bin/Release/net10.0-ios

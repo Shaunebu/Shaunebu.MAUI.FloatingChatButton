@@ -1,53 +1,55 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
+		<TargetFrameworks>net9.0-android;net9.0-ios;net10.0-android;net10.0-ios</TargetFrameworks>
 		<OutputType>Library</OutputType>
 		<RootNamespace>FloatingChatButton</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 
 		<!-- NuGet metadata -->
 		<PackageId>Shaunebu.MAUI.Controls.FloatingChatButton</PackageId>
-		<Version>1.0.3</Version>
-		<Authors>Jorge Perales Diaz</Authors>
+		<Version>1.1.0</Version>
+		<Authors>Shaunebu</Authors>
 		<Company>Shaunebu ®</Company>
 		<Description>Floating chat button in .NET MAUI</Description>
-		<PackageProjectUrl>https://www.nuget.org/packages/Shaunebu.MAUI.Controls.FloatingChatButton/</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/jpd21122012/MAUI.FloatingChatButton.git</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/Shaunebu/Shaunebu.MAUI.FloatingChatButton</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Shaunebu/Shaunebu.MAUI.FloatingChatButton</RepositoryUrl>
 		<PackageTags>maui;chat;floating;button</PackageTags>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageIcon>Shaunebu.png</PackageIcon>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryType>git</RepositoryType>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Deterministic>true</Deterministic>
+		<ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <None Include="..\README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	  <None Include="..\Shaunebu.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android' Or '$(TargetFramework)' == 'net9.0-ios'">
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.90" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="12.1.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.90" />
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android' Or '$(TargetFramework)' == 'net10.0-ios'">
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.80" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiXaml Update="Controls\FloatingChatButton.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="docs\assets\**" Pack="true" PackagePath="docs\assets\" />
 	</ItemGroup>
 
 </Project>

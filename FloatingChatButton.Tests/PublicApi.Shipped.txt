@@ -1,0 +1,42 @@
+F:FloatingChatButton.Controls.FloatingChatButton.BotIconProperty : Microsoft.Maui.Controls.BindableProperty
+F:FloatingChatButton.Controls.FloatingChatButton.IsExpandedProperty : Microsoft.Maui.Controls.BindableProperty
+F:FloatingChatButton.Controls.FloatingChatButton.MessagesProperty : Microsoft.Maui.Controls.BindableProperty
+F:FloatingChatButton.Controls.FloatingChatButton.PrimaryColorProperty : Microsoft.Maui.Controls.BindableProperty
+M:FloatingChatButton.Controls.FloatingChatButton.#ctor()
+M:FloatingChatButton.Controls.FloatingChatButton.Dispose() : System.Void
+M:FloatingChatButton.Converters.BoolToAlignmentConverter.#ctor()
+M:FloatingChatButton.Converters.BoolToAlignmentConverter.Convert(System.Object, System.Type, System.Object, System.Globalization.CultureInfo) : System.Object
+M:FloatingChatButton.Converters.BoolToAlignmentConverter.ConvertBack(System.Object, System.Type, System.Object, System.Globalization.CultureInfo) : System.Object
+M:FloatingChatButton.Converters.BoolToColorConverter.#ctor()
+M:FloatingChatButton.Converters.BoolToColorConverter.Convert(System.Object, System.Type, System.Object, System.Globalization.CultureInfo) : System.Object
+M:FloatingChatButton.Converters.BoolToColorConverter.ConvertBack(System.Object, System.Type, System.Object, System.Globalization.CultureInfo) : System.Object
+M:FloatingChatButton.Converters.BoolToStrokeShapeConverter.#ctor()
+M:FloatingChatButton.Converters.BoolToStrokeShapeConverter.Convert(System.Object, System.Type, System.Object, System.Globalization.CultureInfo) : System.Object
+M:FloatingChatButton.Converters.BoolToStrokeShapeConverter.ConvertBack(System.Object, System.Type, System.Object, System.Globalization.CultureInfo) : System.Object
+M:FloatingChatButton.Converters.InvertedBoolConverter.#ctor()
+M:FloatingChatButton.Converters.InvertedBoolConverter.Convert(System.Object, System.Type, System.Object, System.Globalization.CultureInfo) : System.Object
+M:FloatingChatButton.Converters.InvertedBoolConverter.ConvertBack(System.Object, System.Type, System.Object, System.Globalization.CultureInfo) : System.Object
+M:FloatingChatButton.Extensions.ViewExtensions.ResizeTo(Microsoft.Maui.Controls.VisualElement, System.Double, System.Double, System.UInt32, Microsoft.Maui.Easing) : System.Threading.Tasks.Task<System.Boolean>
+M:FloatingChatButton.MauiExtensions.UseFloatingChatButton(Microsoft.Maui.Hosting.MauiAppBuilder) : Microsoft.Maui.Hosting.MauiAppBuilder
+M:FloatingChatButton.Models.ChatMessage.#ctor()
+M:FloatingChatButton.PlatformClass1.#ctor()
+P:FloatingChatButton.Controls.FloatingChatButton.BotIcon : Microsoft.Maui.Controls.ImageSource { get;set; }
+P:FloatingChatButton.Controls.FloatingChatButton.IsExpanded : System.Boolean { get;set; }
+P:FloatingChatButton.Controls.FloatingChatButton.Messages : System.Collections.ObjectModel.ObservableCollection<FloatingChatButton.Models.ChatMessage> { get;set; }
+P:FloatingChatButton.Controls.FloatingChatButton.PrimaryColor : Microsoft.Maui.Graphics.Color { get;set; }
+P:FloatingChatButton.Converters.BoolToAlignmentConverter.FalseOption : Microsoft.Maui.Controls.LayoutOptions { get;set; }
+P:FloatingChatButton.Converters.BoolToAlignmentConverter.TrueOption : Microsoft.Maui.Controls.LayoutOptions { get;set; }
+P:FloatingChatButton.Converters.BoolToColorConverter.FalseColor : Microsoft.Maui.Graphics.Color { get;set; }
+P:FloatingChatButton.Converters.BoolToColorConverter.TrueColor : Microsoft.Maui.Graphics.Color { get;set; }
+P:FloatingChatButton.Models.ChatMessage.IsIncoming : System.Boolean { get;set; }
+P:FloatingChatButton.Models.ChatMessage.Text : System.String { get;set; }
+T:FloatingChatButton.Controls.FloatingChatButton
+T:FloatingChatButton.Converters.BoolToAlignmentConverter
+T:FloatingChatButton.Converters.BoolToColorConverter
+T:FloatingChatButton.Converters.BoolToStrokeShapeConverter
+T:FloatingChatButton.Converters.InvertedBoolConverter
+T:FloatingChatButton.Extensions.ViewExtensions
+T:FloatingChatButton.MauiExtensions
+T:FloatingChatButton.Models.ChatMessage
+T:FloatingChatButton.PlatformClass1
+T:NamespaceRegistration
